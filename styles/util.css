@@ -1,0 +1,56 @@
+.centered{
+	text-align: center;
+	margin: 0 auto;
+}
+
+.gameover{
+	margin-top: 5%;
+}
+
+body{
+	background-color: #ccc;
+	padding-top: 2%;
+}
+
+.diccifulty-options{
+	cursor: pointer;
+	margin-left: 3%;
+}
+
+.diccifulty-options:hover{
+	color: white;
+}
+
+.game-tile{
+	margin: 5px;
+	width: 100px;
+	height: 100px;
+}
+
+.game-tile .:hover{
+	color: !important ;
+}
+
+.played-by-x, .played-by-o{
+	font-family: 'Helvetica', 'Arial', sans-serif;
+	font-size: 4em;
+	font-weight: bold;
+	text-align: center;
+}
+
+.game-tile .played-by-x:hover, .played-by-x {
+	color:#7533AF !important;
+}
+
+.game-tile .played-by-o:hover, .played-by-o {
+	color:#57E22D !important;
+}
+
+#username {
+	width: 20%;
+	margin-bottom: 2%;
+}
+
+#resetGame {
+	margin-top: 2%;
+}

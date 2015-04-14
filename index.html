@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Tic Tac Toe</title>
+		<script type="text/javascript" src="libs/jquery.js"></script>
+		<script type="text/javascript" src="bootstrap.js"></script>
+		<link rel="stylesheet" type="text/css" href="styles/bootstrap-3.2.0-dist/bootstrap-theme.css" />
+    	<link rel="stylesheet" type="text/css" href="styles/bootstrap-3.2.0-dist/bootstrap.css" />
+    	<link rel="stylesheet" type="text/css" href="styles/util.css" />
+	</head>
+	<body class="centered">
+	<section id="navigation" class="centered">
+		<input type="button" id="play" value="Play" class="btn btn-success btn-lg centered"/>
+		<input type="button" id="playAgain" value="Play Again?" class="btn btn-success btn-lg centered"/>
+		<div class="form-horizontal" id="userform">
+			<input type="text" id="username" placeholder="Enter username" class="form-control centered"/>
+			<button class="btn btn-default" id="submitUsername">Submit</button>
+		</div>
+		<div class="btn-group closed"  id="difficulty">
+			<a data-toggle="dropdown" class="btn btn-default dropdown-toggle" href="#">
+	          Difficulty
+	          <span class="caret"></span>
+	        </a>
+	        <ul class="dropdown-menu">
+				<li class="diccifulty-options">Easy</li>
+				<li class="diccifulty-options">Normal</li>
+				<li class="diccifulty-options">Impossible</li>
+	        </ul>
+        </div>
+	</section>
+	<section id="gameField" class="centered">
+		<span id="user"></span> vs
+		<span>CPU</span>
+		<div class="row">
+			<div id="1" class="btn btn-default btn-lg game-tile"></div>
+			<div id="2" class="btn btn-default btn-lg game-tile"></div>
+			<div id="3" class="btn btn-default btn-lg game-tile"></div>
+		</div>
+		<div class="row">
+			<div id="4" class="btn btn-default btn-lg game-tile"></div>
+			<div id="5" class="btn btn-default btn-lg game-tile"></div>
+			<div id="6" class="btn btn-default btn-lg game-tile"></div>
+		</div>
+		<div class="row">
+			<div id="7" class="btn btn-default btn-lg game-tile"></div>
+			<div id="8" class="btn btn-default btn-lg game-tile"></div>
+			<div id="9" class="btn btn-default btn-lg game-tile"></div>
+		</div>
+	</section>
+	<footer>
+		<button class="btn btn-danger" id="resetGame">Reset game</button>
+	</footer>
+	<script type="text/javascript" src="tictactoe.js"></script>
+	</body>
+</html>
