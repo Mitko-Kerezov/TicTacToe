@@ -2,7 +2,7 @@
 	var $playButton = $("#play");
 	var $playAgainButton = $("#playAgain");
 	var $difficultyDropdown = $("#difficulty");
-	var $difficultyOptions = $(".diccifulty-options");
+	var $difficultyOptions = $(".difficulty-options");
 	var $userForm = $("#userform");
 	var $usernameInputField = $("#username");
 	var $usernameSubmitBtn = $("#submitUsername");
@@ -46,6 +46,7 @@
 
 	function chooseDifficulty() {
 		difficulty = $(this).text();
+		$('#cpu').append('(' + difficulty + ')');
 		$difficultyDropdown.hide();
 		$("#user").text(username);
 

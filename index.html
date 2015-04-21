@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<meta name="HandheldFriendly" content="True">
+        <meta name="MobileOptimized" content="320">
+		<meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui, maximum-scale=1">
 		<title>Tic Tac Toe</title>
 		<script type="text/javascript" src="libs/jquery.js"></script>
 		<script type="text/javascript" src="bootstrap.js"></script>
@@ -22,26 +25,26 @@
 	          <span class="caret"></span>
 	        </a>
 	        <ul class="dropdown-menu">
-				<li class="diccifulty-options">Easy</li>
-				<li class="diccifulty-options">Normal</li>
-				<li class="diccifulty-options">Impossible</li>
+				<li class="difficulty-options">Easy</li>
+				<li class="difficulty-options">Normal</li>
+				<li class="difficulty-options">Impossible</li>
 	        </ul>
         </div>
 	</section>
 	<section id="gameField" class="centered">
 		<span id="user"></span> vs
-		<span>CPU</span>
-		<div class="row">
+		<span id="cpu">CPU</span>
+		<div>
 			<div id="1" class="btn btn-default btn-lg game-tile"></div>
 			<div id="2" class="btn btn-default btn-lg game-tile"></div>
 			<div id="3" class="btn btn-default btn-lg game-tile"></div>
 		</div>
-		<div class="row">
+		<div>
 			<div id="4" class="btn btn-default btn-lg game-tile"></div>
 			<div id="5" class="btn btn-default btn-lg game-tile"></div>
 			<div id="6" class="btn btn-default btn-lg game-tile"></div>
 		</div>
-		<div class="row">
+		<div>
 			<div id="7" class="btn btn-default btn-lg game-tile"></div>
 			<div id="8" class="btn btn-default btn-lg game-tile"></div>
 			<div id="9" class="btn btn-default btn-lg game-tile"></div>

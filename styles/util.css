@@ -12,12 +12,12 @@ body{
 	padding-top: 2%;
 }
 
-.diccifulty-options{
+.difficulty-options{
 	cursor: pointer;
-	margin-left: 3%;
+	padding-left: 3%;
 }
 
-.diccifulty-options:hover{
+.difficulty-options:hover{
 	color: white;
 }
 
@@ -53,4 +53,8 @@ body{
 
 #resetGame {
 	margin-top: 2%;
+}
+
+.form-control {
+	min-width:200px;
 }
