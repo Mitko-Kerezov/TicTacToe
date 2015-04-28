@@ -13,7 +13,9 @@
 	</head>
 	<body class="centered">
 	<section id="navigation" class="centered">
+		<div id="end-game"><img src="images\YouWin.png" width="100%"/></div>
 		<input type="button" id="play" value="Play" class="btn btn-success btn-lg centered"/>
+		<input type="button" id="versus" value="Versus" class="btn btn-primary btn-lg centered"/>
 		<input type="button" id="playAgain" value="Play Again?" class="btn btn-success btn-lg centered"/>
 		<div class="form-horizontal" id="userform">
 			<input type="text" id="username" placeholder="Enter username" class="form-control centered"/>
@@ -33,7 +35,7 @@
 	</section>
 	<section id="gameField" class="centered">
 		<span id="user"></span> vs
-		<span id="cpu">CPU</span>
+		<span id="opponent"></span>
 		<div>
 			<div id="1" class="btn btn-default btn-lg game-tile"></div>
 			<div id="2" class="btn btn-default btn-lg game-tile"></div>

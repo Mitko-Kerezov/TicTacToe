@@ -1,22 +1,24 @@
 (function(){
-	var $playButton = $("#play");
-	var $playAgainButton = $("#playAgain");
-	var $difficultyDropdown = $("#difficulty");
-	var $difficultyOptions = $(".difficulty-options");
-	var $userForm = $("#userform");
-	var $usernameInputField = $("#username");
-	var $usernameSubmitBtn = $("#submitUsername");
-	var $gameField = $("#gameField");
-	var $gameTiles = $(".game-tile");
-	var $resetGame = $("#resetGame");
-	var impossibleStrategy = "none";
-	var impossibleDivToMark;
-	var impossibleDivToMarkCounter;
-	var impossibleDivToMarkForWinning;
-	var isPlayerO = false;
-	var isGameOver = false;
-	var difficulty;
-	var username;
+	var $playButton = $("#play"),
+		$playVersusButton = $("#versus"),
+		$playAgainButton = $("#playAgain"),
+		$difficultyDropdown = $("#difficulty"),
+		$difficultyOptions = $(".difficulty-options"),
+		$userForm = $("#userform"),
+		$usernameInputField = $("#username"),
+		$usernameSubmitBtn = $("#submitUsername"),
+		$gameField = $("#gameField"),
+		$gameTiles = $(".game-tile"),
+		$resetGame = $("#resetGame"),
+		$endGameContainer = $("#end-game"),
+		impossibleStrategy = "none",
+		impossibleDivToMark,
+		impossibleDivToMarkCounter,
+		impossibleDivToMarkForWinning,
+		isPlayerO = false,
+		isGameOver = false,
+		difficulty,
+		username;
 
 	$resetGame.hide();
 	$difficultyDropdown.hide();
@@ -46,7 +48,7 @@
 
 	function chooseDifficulty() {
 		difficulty = $(this).text();
-		$('#cpu').append('(' + difficulty + ')');
+		$('#opponent').append('CPU(' + difficulty + ')');
 		$difficultyDropdown.hide();
 		$("#user").text(username);
 
@@ -61,6 +63,7 @@
 
 	function play () {
 		$(this).hide();
+		$playVersusButton.hide();
 		$userForm.show();
 	}
 
@@ -74,6 +77,7 @@
 		if (isGameOver) {
 			return this;
 		}
+		
 		var $this = $(this);
 
 		if($this.hasClass('played-by-x') || $this.hasClass('played-by-o'))

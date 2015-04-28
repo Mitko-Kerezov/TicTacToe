@@ -55,6 +55,11 @@ body{
 	margin-top: 2%;
 }
 
+#end-game {
+	position: absolute;
+	top: 20%;
+}
+
 .form-control {
 	min-width:200px;
 }
