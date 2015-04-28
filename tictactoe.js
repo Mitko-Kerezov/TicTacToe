@@ -11,6 +11,7 @@
 		$gameTiles = $(".game-tile"),
 		$resetGame = $("#resetGame"),
 		$endGameContainer = $("#end-game"),
+		$endGameImage = $("#end-game-image"),
 		impossibleStrategy = "none",
 		impossibleDivToMark,
 		impossibleDivToMarkCounter,
@@ -20,6 +21,7 @@
 		difficulty,
 		username;
 
+	$endGameContainer.hide();
 	$resetGame.hide();
 	$difficultyDropdown.hide();
 	$userForm.hide();
@@ -37,6 +39,7 @@
 
 	function playAgain() {
 		$playAgainButton.hide();
+		$endGameContainer.hide();
 		$('.played-by-o').removeClass('played-by-o').text('');
 		$('.played-by-x').removeClass('played-by-x').text('');
 		isGameOver = false;
@@ -98,7 +101,8 @@
 
 		checkWin(true, isPlayerO);
 		if (isDraw() && !isGameOver) {
-			alert("Draw!");
+			$endGameImage.attr("src", "images/draw.png");
+			$endGameContainer.fadeIn(1500);
 			$playAgainButton.show();
 			isGameOver = true;
 			impossibleStrategy = "none";
@@ -111,7 +115,8 @@
 
 		checkWin(false, !isPlayerO);
 		if (isDraw() && !isGameOver) {
-			alert("Draw!");
+			$endGameImage.attr("src", "images/draw.png");
+			$endGameContainer.fadeIn(1500);
 			$playAgainButton.show();
 			isGameOver = true;
 			impossibleStrategy = "none";
@@ -527,15 +532,14 @@
 		};
 
 		if (checkRows(numbers) || checkCols(numbers) || checkDiagonals(numbers)) {
-			var message = "You ";
 			if (hasPlayerPlayed) {
-				message += "win!";
+				$endGameImage.attr("src", "images/win.png");
 			}
 			else {
-				message += "lose!";
+				$endGameImage.attr("src", "images/lose.png");
 			}
 
-			alert(message);
+			$endGameContainer.fadeIn(1500);
 			$playAgainButton.show();
 			isGameOver = true;
 			impossibleStrategy = "none";

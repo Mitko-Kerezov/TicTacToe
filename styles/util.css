@@ -21,10 +21,19 @@ body{
 	color: white;
 }
 
+#gameField{
+	width: 100%;
+	min-height: 300px;
+}
+
 .game-tile{
-	margin: 5px;
-	width: 100px;
-	height: 100px;
+	margin: 0.3%;
+	min-width: 80px;
+	max-width: 100px; 
+	min-height: 80px;
+	max-height: 100px;
+	padding: 0;
+	/*height: 100px;*/
 }
 
 .game-tile .:hover{
@@ -56,10 +65,19 @@ body{
 }
 
 #end-game {
+	margin: auto;
 	position: absolute;
-	top: 20%;
+	max-height: 250px;
+	max-width: 250px;
+	top: 0; left: 0; bottom: 0; right: 0;
 }
 
 .form-control {
 	min-width:200px;
+}
+
+@media screen and (orientation: landscape) {
+	#end-game {
+		top: 30%;
+	}
 }
