@@ -5,8 +5,12 @@
 		$difficultyDropdown = $("#difficulty"),
 		$difficultyOptions = $(".difficulty-options"),
 		$userForm = $("#userform"),
+		$versusForm = $("#versusform"),
 		$usernameInputField = $("#username"),
+		$playerOneInputField = $("#playerOne"),
+		$playerTwoInputField = $("#playerTwo"),
 		$usernameSubmitBtn = $("#submitUsername"),
+		$versusSubmitBtn = $("#submitVersus"),
 		$gameField = $("#gameField"),
 		$gameTiles = $(".game-tile"),
 		$resetGame = $("#resetGame"),
@@ -18,18 +22,24 @@
 		impossibleDivToMarkForWinning,
 		isPlayerO = false,
 		isGameOver = false,
+		isTwoPlayerGame = false,
 		difficulty,
-		username;
+		username,
+		playerOneUsername,
+		playerTwoUsername;
 
 	$endGameContainer.hide();
 	$resetGame.hide();
 	$difficultyDropdown.hide();
 	$userForm.hide();
+	$versusForm.hide();
 	$playAgainButton.hide();
 	$gameField.hide();
 	$difficultyOptions.on('click', chooseDifficulty);
 	$playButton.on('click', play);
+	$playVersusButton.on('click', playVersus);
 	$usernameSubmitBtn.on('click', enterUserName);
+	$versusSubmitBtn.on('click', enterPlayerUserNames);
 	$gameTiles.on('click', takeTurn);
 	$playAgainButton.on('click', playAgain);
 
@@ -44,16 +54,16 @@
 		$('.played-by-x').removeClass('played-by-x').text('');
 		isGameOver = false;
 		isPlayerO = getRandomBool();
-		if(!getRandomBool()) {
+		if(!getRandomBool() && !isTwoPlayerGame) {
 			decideTurn(true);
 		}
 	}
 
 	function chooseDifficulty() {
 		difficulty = $(this).text();
-		$('#opponent').append('CPU(' + difficulty + ')');
+		$('#playerTwoName').append('CPU(' + difficulty + ')');
 		$difficultyDropdown.hide();
-		$("#user").text(username);
+		$("#playerOneName").text(username);
 
 		$gameField.show();
 		$resetGame.show();
@@ -64,20 +74,39 @@
 		}
 	}
 
-	function play () {
+	function play() {
 		$(this).hide();
 		$playVersusButton.hide();
 		$userForm.show();
 	}
 
-	function enterUserName () {
+	function playVersus() {
+		$(this).hide();
+		$playButton.hide();
+		$versusForm.show();
+	}
+
+	function enterUserName() {
 		username = $usernameInputField.val() || "Anonymous";
 		$userForm.hide();
 		$difficultyDropdown.show();	
-}
+	}
+
+	function enterPlayerUserNames() {
+		playerOneUsername = $playerOneInputField.val() || "Player One";
+		playerTwoUsername = $playerTwoInputField.val() || "Player Two";
+		$versusForm.hide();
+		$("#playerOneName").text(playerOneUsername);
+		$("#playerTwoName").text(playerTwoUsername);
+
+		isTwoPlayerGame = true;
+
+		$gameField.show();
+		$resetGame.show();
+	}
 
 	function takeTurn() {
-		if (isGameOver) {
+		if(isGameOver) {
 			return this;
 		}
 		
@@ -100,7 +129,7 @@
 		
 
 		checkWin(true, isPlayerO);
-		if (isDraw() && !isGameOver) {
+		if(isDraw() && !isGameOver) {
 			$endGameImage.attr("src", "images/draw.png");
 			$endGameContainer.fadeIn(1500);
 			$playAgainButton.show();
@@ -109,12 +138,16 @@
 			return this;
 		}
 
-		if (!isGameOver) {
+		if(!isGameOver && !isTwoPlayerGame) {
 			decideTurn(false);
+			checkWin(false, !isPlayerO);
+		}
+		else if(isTwoPlayerGame) {
+			isPlayerO = !isPlayerO;
+			checkWin(false, isPlayerO);
 		}
 
-		checkWin(false, !isPlayerO);
-		if (isDraw() && !isGameOver) {
+		if(isDraw() && !isGameOver) {
 			$endGameImage.attr("src", "images/draw.png");
 			$endGameContainer.fadeIn(1500);
 			$playAgainButton.show();
@@ -124,6 +157,7 @@
 		}
 
 	}
+
 	function decideTurn(isFirstTurn) {
 		switch(difficulty) {
 			case "Easy" :
@@ -140,8 +174,8 @@
 		}
 	}
 
-	function aiMarkDiv ($div) {
-		if (isPlayerO) {
+	function aiMarkDiv($div) {
+		if(isPlayerO) {
 			$div.addClass('played-by-x');
 			$div.text("X");
 		}
@@ -151,8 +185,8 @@
 		}
 	}
 
-	function takeTurnEasy () {
-		while (true) {
+	function takeTurnEasy() {
+		while(true) {
 			var $div = $('#' + getRandomNumberFrom1To9());
 			if($div.hasClass('played-by-x') || $div.hasClass('played-by-o')) {
 				continue;
@@ -162,8 +196,8 @@
 		}
 	}
 
-	function takeTurnNormal (isFirstTurn) {
-		if (getRandomBool()) {
+	function takeTurnNormal(isFirstTurn) {
+		if(getRandomBool()) {
 			takeTurnEasy();
 		}
 		else {
@@ -182,12 +216,12 @@
 			return this;
 		}
 
-		if (counterPlayerStrategyIfPossible()) {
+		if(counterPlayerStrategyIfPossible()) {
 			aiMarkDiv($('#' + impossibleDivToMarkCounter));
 			return this;
 		}
 
-		if (isFirstTurn) {
+		if(isFirstTurn) {
 			switch(getRandomNumberFrom1To9() % 3) {
 				case 0: 
 					impossibleStrategy = "Corner";
@@ -203,7 +237,7 @@
 
 		var playerMove = isPlayerO ? $($('.played-by-o')).attr('id') : $($('.played-by-x')).attr('id');
 		
-		if (impossibleStrategy == "none") {
+		if(impossibleStrategy == "none") {
 			impossibleStrategy = getStrategyByPlayerMove(playerMove);
 		}
 
@@ -222,20 +256,20 @@
 		}
 	}
 	
-	function isDivTaken (divId) {
+	function isDivTaken(divId) {
 		var div = $("#" + divId);
 		return div.hasClass('played-by-o') || div.hasClass('played-by-x');
 	}
 
 	function executeMiddleStategy(movesMadeSoFar) {
-		if (movesMadeSoFar === 0) {
+		if(movesMadeSoFar === 0) {
 			aiMarkDiv($('#' + 5));
 		}
 		else {
 			var aiTiles = getAITiles();
 			var playerNumbers = getPlayerTiles();
-			if (movesMadeSoFar === 1) {
-				if (playerNumbers.length == 1) {
+			if(movesMadeSoFar === 1) {
+				if(playerNumbers.length == 1) {
 					switch(playerNumbers[0]) {
 						case "1":
 							aiMarkDiv($('#' + 9));
@@ -289,44 +323,44 @@
 					}
 				}
 			}
-			if (movesMadeSoFar === 2) {
-				if ($.inArray("1", aiTiles) !== -1) {
-					if ($.inArray("2", playerNumbers) && !isDivTaken(7)) {
+			if(movesMadeSoFar === 2) {
+				if($.inArray("1", aiTiles) !== -1) {
+					if($.inArray("2", playerNumbers) && !isDivTaken(7)) {
 						aiMarkDiv($('#' + 7));
 						return;		
 					}
-					else if ($.inArray("4", playerNumbers) && !isDivTaken(3)){
+					else if($.inArray("4", playerNumbers) && !isDivTaken(3)){
 						aiMarkDiv($('#' + 3));
 						return;		
 					}
 					
 				}
-				if ($.inArray("3", aiTiles) !== -1 && !isDivTaken(1)) {
-					if ($.inArray("2", playerNumbers) && !isDivTaken(9)) {
+				if($.inArray("3", aiTiles) !== -1 && !isDivTaken(1)) {
+					if($.inArray("2", playerNumbers) && !isDivTaken(9)) {
 						aiMarkDiv($('#' + 9));
 						return;		
 					}
-					else if ($.inArray("6", playerNumbers) && !isDivTaken(1)){
+					else if($.inArray("6", playerNumbers) && !isDivTaken(1)){
 						aiMarkDiv($('#' + 1));
 						return;		
 					}
 				}
-				if ($.inArray("7", aiTiles) !== -1 && !isDivTaken(9)) {
-					if ($.inArray("8", playerNumbers) && !isDivTaken(1)) {
+				if($.inArray("7", aiTiles) !== -1 && !isDivTaken(9)) {
+					if($.inArray("8", playerNumbers) && !isDivTaken(1)) {
 						aiMarkDiv($('#' + 1));
 						return;		
 					}
-					else if ($.inArray("4", playerNumbers) && !isDivTaken(9)){
+					else if($.inArray("4", playerNumbers) && !isDivTaken(9)){
 						aiMarkDiv($('#' + 9));
 						return;		
 					}
 				}
-				if ($.inArray("9", aiTiles) !== -1 && !isDivTaken(7)) {
-					if ($.inArray("6", playerNumbers) && !isDivTaken(7)) {
+				if($.inArray("9", aiTiles) !== -1 && !isDivTaken(7)) {
+					if($.inArray("6", playerNumbers) && !isDivTaken(7)) {
 						aiMarkDiv($('#' + 7));
 						return;		
 					}
-					else if ($.inArray("8", playerNumbers) && !isDivTaken(3)){
+					else if($.inArray("8", playerNumbers) && !isDivTaken(3)){
 						aiMarkDiv($('#' + 3));
 						return;		
 					}
@@ -337,7 +371,7 @@
 	}
 
 	function executeCornerStategy(movesMadeSoFar) {
-		if (movesMadeSoFar === 0) {
+		if(movesMadeSoFar === 0) {
 			switch(getRandomNumberFrom1To9() % 4) {
 				case 0:
 					aiMarkDiv($('#' + 1));
@@ -355,48 +389,48 @@
 		}
 		else {
 			var aiTiles = getAITiles();
-			if (movesMadeSoFar === 1) {
-				if ($.inArray("5", aiTiles) === -1 && !isDivTaken(5)) {
+			if(movesMadeSoFar === 1) {
+				if($.inArray("5", aiTiles) === -1 && !isDivTaken(5)) {
 					aiMarkDiv($('#' + 5));
 					return;
 				}
 				else {
-					if ($.inArray("1", aiTiles) !== -1 && !isDivTaken(9)) {
+					if($.inArray("1", aiTiles) !== -1 && !isDivTaken(9)) {
 						aiMarkDiv($('#' + 9));
 						return;
 					}
-					if ($.inArray("3", aiTiles) !== -1 && !isDivTaken(7)) {
+					if($.inArray("3", aiTiles) !== -1 && !isDivTaken(7)) {
 						aiMarkDiv($('#' + 7));
 						return;
 					}
-					if ($.inArray("7", aiTiles) !== -1 && !isDivTaken(3)) {
+					if($.inArray("7", aiTiles) !== -1 && !isDivTaken(3)) {
 						aiMarkDiv($('#' + 3));
 						return;
 					}
-					if ($.inArray("9", aiTiles) !== -1 && !isDivTaken(1)) {
+					if($.inArray("9", aiTiles) !== -1 && !isDivTaken(1)) {
 						aiMarkDiv($('#' + 1));
 						return;
 					}
 				}
 			}
 
-			if (movesMadeSoFar === 2) {
+			if(movesMadeSoFar === 2) {
 				if(containsAll(["1", "9"], aiTiles)) {
-					if (getRandomBool() && !isDivTaken(7)) {
+					if(getRandomBool() && !isDivTaken(7)) {
 						aiMarkDiv($('#' + 7));
 						return;
 					}
-					if (!isDivTaken(3)) {
+					if(!isDivTaken(3)) {
 						aiMarkDiv($('#' + 3));
 						return;
 					}
 				}
 				if(containsAll(["3", "7"], aiTiles)) {
-					if (getRandomBool() && !isDivTaken(1)) {
+					if(getRandomBool() && !isDivTaken(1)) {
 						aiMarkDiv($('#' + 1));
 						return;
 					}
-					if (!isDivTaken(9)) {
+					if(!isDivTaken(9)) {
 						aiMarkDiv($('#' + 9));
 						return;
 					}
@@ -408,7 +442,7 @@
 	}
 
 	function executeEdgeStategy(movesMadeSoFar) {
-		if (movesMadeSoFar === 0) {
+		if(movesMadeSoFar === 0) {
 			switch(getRandomNumberFrom1To9() % 4) {
 				case 0:
 					aiMarkDiv($('#' + 2));
@@ -426,13 +460,13 @@
 		}
 		else {
 			var aiTiles = getAITiles();
-			if (movesMadeSoFar === 1) {
-				if ($.inArray("5", aiTiles) === -1 && !isDivTaken(5)) {
+			if(movesMadeSoFar === 1) {
+				if($.inArray("5", aiTiles) === -1 && !isDivTaken(5)) {
 					aiMarkDiv($('#' + 5));
 					return;
 				}
-				else if ($.inArray("2", aiTiles) !== -1 || $.inArray("8", aiTiles) !== -1) {
-					if (getRandomBool()  && !isDivTaken(4)) {
+				else if($.inArray("2", aiTiles) !== -1 || $.inArray("8", aiTiles) !== -1) {
+					if(getRandomBool()  && !isDivTaken(4)) {
 						aiMarkDiv($('#' + 4));
 						return;
 					}
@@ -442,7 +476,7 @@
 					}
 				}
 				else {
-					if (getRandomBool()  && !isDivTaken(2)) {
+					if(getRandomBool()  && !isDivTaken(2)) {
 						aiMarkDiv($('#' + 2));
 						return;
 					}
@@ -453,23 +487,23 @@
 				}
 			}
 
-			if (movesMadeSoFar === 2) {
+			if(movesMadeSoFar === 2) {
 				if($.inArray("4", aiTiles) !== -1) {
-					if ($.inArray("8", aiTiles) !== -1  && !isDivTaken(7)) {
+					if($.inArray("8", aiTiles) !== -1  && !isDivTaken(7)) {
 						aiMarkDiv($('#' + 7));
 						return;
 					}
-					else if (!isDivTaken(1)){
+					else if(!isDivTaken(1)){
 						aiMarkDiv($('#' + 1));
 						return;
 					}
 				}
 				if($.inArray("6", aiTiles) !== -1) {
-					if ($.inArray("8", aiTiles) !== -1  && !isDivTaken(9)) {
+					if($.inArray("8", aiTiles) !== -1  && !isDivTaken(9)) {
 						aiMarkDiv($('#' + 9));
 						return;
 					}
-					else if (!isDivTaken(3)){
+					else if(!isDivTaken(3)){
 						aiMarkDiv($('#' + 3));
 						return;
 					}
@@ -481,7 +515,7 @@
 	}
 
 	function getStrategyByPlayerMove(playerMove) {
-		switch (parseInt(playerMove)) {
+		switch(parseInt(playerMove)) {
 			case 5:
 				return "Corner";
 			case 1:
@@ -500,21 +534,21 @@
 		}
 	}
 
-	function getRandomBool () {
+	function getRandomBool() {
 		return parseInt(Math.random()*100) % 2 == 1 ? true : false;
 	}
 
-	function getRandomNumberFrom1To9 () {
+	function getRandomNumberFrom1To9() {
 		return parseInt(Math.random()*100) % 9 + 1;
 	}
 
-	function isDraw () {
-		return ($('.played-by-o').length + $('.played-by-x').length) == 9;
+	function isDraw() {
+		return($('.played-by-o').length + $('.played-by-x').length) == 9;
 	}
 
-	function checkWin (hasPlayerPlayed, checkO) {
+	function checkWin(hasPlayerPlayed, checkO) {
 		var $totalTiles;
-		if (checkO) {
+		if(checkO) {
 			$totalTiles = $('.played-by-o');
 		}
 		else {
@@ -526,13 +560,13 @@
 		}
 
 		var numbers = [];
-		for (var i = 0; i < $totalTiles.length; i++) {
+		for(var i = 0; i < $totalTiles.length; i++) {
 			var $div = $($totalTiles[i]);
 			numbers.push($div.attr('id'));
 		};
 
-		if (checkRows(numbers) || checkCols(numbers) || checkDiagonals(numbers)) {
-			if (hasPlayerPlayed) {
+		if(checkRows(numbers) || checkCols(numbers) || checkDiagonals(numbers)) {
+			if(hasPlayerPlayed) {
 				$endGameImage.attr("src", "images/win.png");
 			}
 			else {
@@ -547,37 +581,37 @@
 
 	}
 
-	function checkRows (numbers) {
-		if ($.inArray("1", numbers) !== -1 && $.inArray("2", numbers) !== -1 && $.inArray("3", numbers) !== -1) {
+	function checkRows(numbers) {
+		if($.inArray("1", numbers) !== -1 && $.inArray("2", numbers) !== -1 && $.inArray("3", numbers) !== -1) {
 			return true;
 		}
-		if ($.inArray("4", numbers) !== -1 && $.inArray("5", numbers) !== -1 && $.inArray("6", numbers) !== -1) {
+		if($.inArray("4", numbers) !== -1 && $.inArray("5", numbers) !== -1 && $.inArray("6", numbers) !== -1) {
 			return true;
 		}
-		if ($.inArray("7", numbers) !== -1 && $.inArray("8", numbers) !== -1 && $.inArray("9", numbers) !== -1) {
-			return true;
-		}
-		return false;
-	}
-
-	function checkCols (numbers) {
-		if ($.inArray("1", numbers) !== -1 && $.inArray("4", numbers) !== -1 && $.inArray("7", numbers) !== -1) {
-			return true;
-		}
-		if ($.inArray("2", numbers) !== -1 && $.inArray("5", numbers) !== -1 && $.inArray("8", numbers) !== -1) {
-			return true;
-		}
-		if ($.inArray("3", numbers) !== -1 && $.inArray("6", numbers) !== -1 && $.inArray("9", numbers) !== -1) {
+		if($.inArray("7", numbers) !== -1 && $.inArray("8", numbers) !== -1 && $.inArray("9", numbers) !== -1) {
 			return true;
 		}
 		return false;
 	}
 
-	function checkDiagonals (numbers) {
-		if ($.inArray("1", numbers) !== -1 && $.inArray("5", numbers) !== -1 && $.inArray("9", numbers) !== -1) {
+	function checkCols(numbers) {
+		if($.inArray("1", numbers) !== -1 && $.inArray("4", numbers) !== -1 && $.inArray("7", numbers) !== -1) {
 			return true;
 		}
-		if ($.inArray("7", numbers) !== -1 && $.inArray("5", numbers) !== -1 && $.inArray("3", numbers) !== -1) {
+		if($.inArray("2", numbers) !== -1 && $.inArray("5", numbers) !== -1 && $.inArray("8", numbers) !== -1) {
+			return true;
+		}
+		if($.inArray("3", numbers) !== -1 && $.inArray("6", numbers) !== -1 && $.inArray("9", numbers) !== -1) {
+			return true;
+		}
+		return false;
+	}
+
+	function checkDiagonals(numbers) {
+		if($.inArray("1", numbers) !== -1 && $.inArray("5", numbers) !== -1 && $.inArray("9", numbers) !== -1) {
+			return true;
+		}
+		if($.inArray("7", numbers) !== -1 && $.inArray("5", numbers) !== -1 && $.inArray("3", numbers) !== -1) {
 			return true;
 		}
 		return false;
@@ -586,83 +620,83 @@
 	function winIfPossible() {
 		var aiTiles = getAITiles();
 
-		if ((containsAll(["2", "3"], aiTiles) || containsAll(["5", "9"], aiTiles) || containsAll(["4", "7"], aiTiles)) && !isDivTaken(1)) {
+		if((containsAll(["2", "3"], aiTiles) || containsAll(["5", "9"], aiTiles) || containsAll(["4", "7"], aiTiles)) && !isDivTaken(1)) {
 			impossibleDivToMarkForWinning = 1;
 			return true;
 		}
-		if ((containsAll(["1", "3"], aiTiles) || containsAll(["5", "8"], aiTiles)) && !isDivTaken(2)) {
+		if((containsAll(["1", "3"], aiTiles) || containsAll(["5", "8"], aiTiles)) && !isDivTaken(2)) {
 			impossibleDivToMarkForWinning = 2;
 			return true;
 		}
-		if ((containsAll(["1", "2"], aiTiles) || containsAll(["5", "7"], aiTiles) || containsAll(["6", "9"], aiTiles)) && !isDivTaken(3)) {
+		if((containsAll(["1", "2"], aiTiles) || containsAll(["5", "7"], aiTiles) || containsAll(["6", "9"], aiTiles)) && !isDivTaken(3)) {
 			impossibleDivToMarkForWinning = 3;
 			return true;
 		}
-		if ((containsAll(["5", "6"], aiTiles) || containsAll(["1", "7"], aiTiles)) && !isDivTaken(4)) {
+		if((containsAll(["5", "6"], aiTiles) || containsAll(["1", "7"], aiTiles)) && !isDivTaken(4)) {
 			impossibleDivToMarkForWinning = 4;
 			return true;
 		}
-		if ((containsAll(["1", "9"], aiTiles) || containsAll(["3", "7"], aiTiles) || containsAll(["4", "6"], aiTiles) || containsAll(["2", "8"], aiTiles)) && !isDivTaken(5)) {
+		if((containsAll(["1", "9"], aiTiles) || containsAll(["3", "7"], aiTiles) || containsAll(["4", "6"], aiTiles) || containsAll(["2", "8"], aiTiles)) && !isDivTaken(5)) {
 			impossibleDivToMarkForWinning = 5;
 			return true;
 		}
-		if ((containsAll(["4", "5"], aiTiles) || containsAll(["3", "9"], aiTiles)) && !isDivTaken(6)) {
+		if((containsAll(["4", "5"], aiTiles) || containsAll(["3", "9"], aiTiles)) && !isDivTaken(6)) {
 			impossibleDivToMarkForWinning = 6;
 			return true;
 		}
-		if ((containsAll(["1", "4"], aiTiles) || containsAll(["3", "5"], aiTiles) || containsAll(["8", "9"], aiTiles)) && !isDivTaken(7)) {
+		if((containsAll(["1", "4"], aiTiles) || containsAll(["3", "5"], aiTiles) || containsAll(["8", "9"], aiTiles)) && !isDivTaken(7)) {
 			impossibleDivToMarkForWinning = 7;
 			return true;
 		}
-		if ((containsAll(["2", "5"], aiTiles) || containsAll(["7", "9"], aiTiles)) && !isDivTaken(8)) {
+		if((containsAll(["2", "5"], aiTiles) || containsAll(["7", "9"], aiTiles)) && !isDivTaken(8)) {
 			impossibleDivToMarkForWinning = 8;
 			return true;
 		}
-		if ((containsAll(["7", "8"], aiTiles) || containsAll(["3", "6"], aiTiles) || containsAll(["1", "5"], aiTiles)) && !isDivTaken(9)) {
+		if((containsAll(["7", "8"], aiTiles) || containsAll(["3", "6"], aiTiles) || containsAll(["1", "5"], aiTiles)) && !isDivTaken(9)) {
 			impossibleDivToMarkForWinning = 9;
 			return true;
 		}
 		return false;
 	}
 
-	function counterPlayerStrategyIfPossible () {
+	function counterPlayerStrategyIfPossible() {
 		var playerNumbers = getPlayerTiles();
 		var aiNumbers = getAITiles();
-		if (playerNumbers.length === 2) {
-			if (containsAll(["1", "5"], playerNumbers) || containsAll(["5", "9"], playerNumbers)) {
-				if (getRandomBool() && !isDivTaken(7)) {
+		if(playerNumbers.length === 2) {
+			if(containsAll(["1", "5"], playerNumbers) || containsAll(["5", "9"], playerNumbers)) {
+				if(getRandomBool() && !isDivTaken(7)) {
 					impossibleDivToMarkCounter = 7;
 					return true;
 				}
-				if (!isDivTaken(3)) {
+				if(!isDivTaken(3)) {
 					impossibleDivToMarkCounter = 3;
 					return true;
 				}
 			}
-			else if (containsAll(["5", "7"], playerNumbers) || containsAll(["3", "5"], playerNumbers)) {
-				if (getRandomBool() && !isDivTaken(1)) {
+			else if(containsAll(["5", "7"], playerNumbers) || containsAll(["3", "5"], playerNumbers)) {
+				if(getRandomBool() && !isDivTaken(1)) {
 					impossibleDivToMarkCounter = 1;
 					return true;
 				}
-				if (!isDivTaken(9)) {
+				if(!isDivTaken(9)) {
 					impossibleDivToMarkCounter = 9;
 					return true;
 				}
 			}
-			else if (aiNumbers.length === 1 && $.inArray("5", aiNumbers) !== -1) {
-				if (containsAll(["2", "7"], playerNumbers) || containsAll(["2", "4"], playerNumbers) || containsAll(["3", "4"], playerNumbers)) {
+			else if(aiNumbers.length === 1 && $.inArray("5", aiNumbers) !== -1) {
+				if(containsAll(["2", "7"], playerNumbers) || containsAll(["2", "4"], playerNumbers) || containsAll(["3", "4"], playerNumbers)) {
 					impossibleDivToMarkCounter = 1;
 					return true;
 				}
-				if (containsAll(["2", "9"], playerNumbers) || containsAll(["2", "6"], playerNumbers) || containsAll(["1", "6"], playerNumbers)) {
+				if(containsAll(["2", "9"], playerNumbers) || containsAll(["2", "6"], playerNumbers) || containsAll(["1", "6"], playerNumbers)) {
 					impossibleDivToMarkCounter = 3;
 					return true;
 				}
-				if (containsAll(["1", "8"], playerNumbers) || containsAll(["4", "8"], playerNumbers) || containsAll(["4", "9"], playerNumbers)) {
+				if(containsAll(["1", "8"], playerNumbers) || containsAll(["4", "8"], playerNumbers) || containsAll(["4", "9"], playerNumbers)) {
 					impossibleDivToMarkCounter = 7;
 					return true;
 				}
-				if (containsAll(["3", "8"], playerNumbers) || containsAll(["6", "8"], playerNumbers) || containsAll(["6", "7"], playerNumbers)) {
+				if(containsAll(["3", "8"], playerNumbers) || containsAll(["6", "8"], playerNumbers) || containsAll(["6", "7"], playerNumbers)) {
 					impossibleDivToMarkCounter = 9;
 					return true;
 				}
@@ -673,43 +707,43 @@
 		return false;
 	}
 
-	function stopPlayerFromWinningIfPossible () {
+	function stopPlayerFromWinningIfPossible() {
 		var playerNumbers = getPlayerTiles();
 		var aiTiles = getAITiles();
 		impossibleDivToMark = impossibleDivToMark || 0;
-		if ((containsAll(["2", "3"], playerNumbers) || containsAll(["5", "9"], playerNumbers) || containsAll(["4", "7"], playerNumbers)) && $.inArray("1", aiTiles) === -1) {
+		if((containsAll(["2", "3"], playerNumbers) || containsAll(["5", "9"], playerNumbers) || containsAll(["4", "7"], playerNumbers)) && $.inArray("1", aiTiles) === -1) {
 			impossibleDivToMark = 1;
 			return true;
 		}
-		if ((containsAll(["1", "3"], playerNumbers) || containsAll(["5", "8"], playerNumbers)) && $.inArray("2", aiTiles) === -1) {
+		if((containsAll(["1", "3"], playerNumbers) || containsAll(["5", "8"], playerNumbers)) && $.inArray("2", aiTiles) === -1) {
 			impossibleDivToMark = 2;
 			return true;
 		}
-		if ((containsAll(["1", "2"], playerNumbers) || containsAll(["5", "7"], playerNumbers) || containsAll(["6", "9"], playerNumbers)) && $.inArray("3", aiTiles) === -1) {
+		if((containsAll(["1", "2"], playerNumbers) || containsAll(["5", "7"], playerNumbers) || containsAll(["6", "9"], playerNumbers)) && $.inArray("3", aiTiles) === -1) {
 			impossibleDivToMark = 3;
 			return true;
 		}
-		if ((containsAll(["5", "6"], playerNumbers) || containsAll(["1", "7"], playerNumbers)) && $.inArray("4", aiTiles) === -1) {
+		if((containsAll(["5", "6"], playerNumbers) || containsAll(["1", "7"], playerNumbers)) && $.inArray("4", aiTiles) === -1) {
 			impossibleDivToMark = 4;
 			return true;
 		}
-		if ((containsAll(["1", "9"], playerNumbers) || containsAll(["3", "7"], playerNumbers) || containsAll(["4", "6"], playerNumbers) || containsAll(["2", "8"], playerNumbers)) && $.inArray("5", aiTiles) === -1) {
+		if((containsAll(["1", "9"], playerNumbers) || containsAll(["3", "7"], playerNumbers) || containsAll(["4", "6"], playerNumbers) || containsAll(["2", "8"], playerNumbers)) && $.inArray("5", aiTiles) === -1) {
 			impossibleDivToMark = 5;
 			return true;
 		}
-		if ((containsAll(["4", "5"], playerNumbers) || containsAll(["3", "9"], playerNumbers)) && $.inArray("6", aiTiles) === -1) {
+		if((containsAll(["4", "5"], playerNumbers) || containsAll(["3", "9"], playerNumbers)) && $.inArray("6", aiTiles) === -1) {
 			impossibleDivToMark = 6;
 			return true;
 		}
-		if ((containsAll(["1", "4"], playerNumbers) || containsAll(["3", "5"], playerNumbers) || containsAll(["8", "9"], playerNumbers)) && $.inArray("7", aiTiles) === -1) {
+		if((containsAll(["1", "4"], playerNumbers) || containsAll(["3", "5"], playerNumbers) || containsAll(["8", "9"], playerNumbers)) && $.inArray("7", aiTiles) === -1) {
 			impossibleDivToMark = 7;
 			return true;
 		}
-		if ((containsAll(["2", "5"], playerNumbers) || containsAll(["7", "9"], playerNumbers)) && $.inArray("8", aiTiles) === -1) {
+		if((containsAll(["2", "5"], playerNumbers) || containsAll(["7", "9"], playerNumbers)) && $.inArray("8", aiTiles) === -1) {
 			impossibleDivToMark = 8;
 			return true;
 		}
-		if ((containsAll(["7", "8"], playerNumbers) || containsAll(["3", "6"], playerNumbers) || containsAll(["1", "5"], playerNumbers)) && $.inArray("9", aiTiles) === -1) {
+		if((containsAll(["7", "8"], playerNumbers) || containsAll(["3", "6"], playerNumbers) || containsAll(["1", "5"], playerNumbers)) && $.inArray("9", aiTiles) === -1) {
 			impossibleDivToMark = 9;
 			return true;
 		}
@@ -718,7 +752,7 @@
 
 	function getPlayerTiles() {
 		var $totalTiles;
-		if (isPlayerO) {
+		if(isPlayerO) {
 			$totalTiles = $('.played-by-o');
 		}
 		else {
@@ -726,7 +760,7 @@
 		}
 
 		var numbers = [];
-		for (var i = 0; i < $totalTiles.length; i++) {
+		for(var i = 0; i < $totalTiles.length; i++) {
 			var $div = $($totalTiles[i]);
 			numbers.push($div.attr('id'));
 		};
@@ -736,7 +770,7 @@
 
 	function getAITiles() {
 		var $totalTiles;
-		if (isPlayerO) {
+		if(isPlayerO) {
 			$totalTiles = $('.played-by-x');
 		}
 		else {
@@ -744,7 +778,7 @@
 		}
 
 		var numbers = [];
-		for (var i = 0; i < $totalTiles.length; i++) {
+		for(var i = 0; i < $totalTiles.length; i++) {
 			var $div = $($totalTiles[i]);
 			numbers.push($div.attr('id'));
 		};

@@ -55,11 +55,6 @@ body{
 	color:#57E22D !important;
 }
 
-#username {
-	width: 20%;
-	margin-bottom: 2%;
-}
-
 #resetGame {
 	margin-top: 2%;
 }
@@ -72,8 +67,10 @@ body{
 	top: 0; left: 0; bottom: 0; right: 0;
 }
 
-.form-control {
+.form-control-mobile {
 	min-width:200px;
+	width: 20%;
+	margin-bottom: 2%;
 }
 
 @media screen and (orientation: landscape) {
