@@ -364,8 +364,7 @@
 	function executeCornerStategy(movesMadeSoFar) {
 		if (movesMadeSoFar === 0) {
 			var playerNumbers = getPlayerTiles();
-			console.log(playerNumbers);
-			if (playerNumbers.length === 0 || isHardDifficulty) {
+			if (playerNumbers.length === 0 || isHardDifficulty || $.inArray("5", playerNumbers) !== -1) {
 				switch (getRandomNumberFrom1To9() % 4) {
 					case 0:
 						aiMarkDiv($('#' + 1));
@@ -382,53 +381,17 @@
 				}
 			} else {
 				if ($.inArray("2", playerNumbers) !== -1) {
-					switch (getRandomNumberFrom1To9() % 3) {
-						case 0:
-							aiMarkDiv($('#' + 1));
-							return;
-						case 1:
-							aiMarkDiv($('#' + 5));
-							return;
-						case 2:
-							aiMarkDiv($('#' + 3));
-							return;
-					}
+					markRandomOptionOutOfThree(1, 5, 3);
+					return this;
 				} else if ($.inArray("4", playerNumbers) !== -1) {
-					switch (getRandomNumberFrom1To9() % 3) {
-						case 0:
-							aiMarkDiv($('#' + 1));
-							return;
-						case 1:
-							aiMarkDiv($('#' + 5));
-							return;
-						case 2:
-							aiMarkDiv($('#' + 7));
-							return;
-					}
+					markRandomOptionOutOfThree(1, 5, 7);
+					return this;
 				} else if ($.inArray("6", playerNumbers) !== -1) {
-					switch (getRandomNumberFrom1To9() % 3) {
-						case 0:
-							aiMarkDiv($('#' + 3));
-							return;
-						case 1:
-							aiMarkDiv($('#' + 5));
-							return;
-						case 2:
-							aiMarkDiv($('#' + 9));
-							return;
-					}
+					markRandomOptionOutOfThree(3, 5, 9);
+					return this;
 				} else if ($.inArray("8", playerNumbers) !== -1) {
-					switch (getRandomNumberFrom1To9() % 3) {
-						case 0:
-							aiMarkDiv($('#' + 7));
-							return;
-						case 1:
-							aiMarkDiv($('#' + 5));
-							return;
-						case 2:
-							aiMarkDiv($('#' + 9));
-							return;
-					}
+					markRandomOptionOutOfThree(7, 5, 9);
+					return this;
 				}
 			}
 		} else {
@@ -788,6 +751,20 @@
 			return true;
 		}
 		return false;
+	}
+
+	function markRandomOptionOutOfThree(option1, option2, option3) {
+		switch (getRandomNumberFrom1To9() % 3) {
+			case 0:
+				aiMarkDiv($('#' + option1));
+				return;
+			case 1:
+				aiMarkDiv($('#' + option2));
+				return;
+			case 2:
+				aiMarkDiv($('#' + option3));
+				return;
+		}
 	}
 
 	function getPlayerTiles() {
