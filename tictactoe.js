@@ -27,7 +27,12 @@
 		difficulty,
 		username,
 		playerOneUsername,
-		playerTwoUsername;
+		playerTwoUsername,
+		currentX = 0,
+		currentY = 0,
+		endGameContainerSize = parseFloat($endGameContainer.css('width')),
+		orientation,
+		fadeTime = 1500;
 
 	$endGameContainer.hide();
 	$resetGame.hide();
@@ -106,6 +111,47 @@
 		$resetGame.show();
 	}
 
+	function moveEndGameImage(event) {
+		var viewport = {
+				width  : $(window).width(),
+				height : $(window).height()
+			},
+			currentTop = parseFloat($endGameContainer.css('top')) || 0,
+			currentLeft = parseFloat($endGameContainer.css('left')) || 0,
+			beta = window.orientation === 0 ? event.beta : event.gamma,
+			gamma = window.orientation === 0 ? event.gamma : event.beta;
+
+		if (currentY > beta) {
+			currentTop = currentTop >= endGameContainerSize - viewport.height ? currentTop - 10 : currentTop;
+			$endGameContainer.css({'top' : currentTop + 'px'});
+		} else {
+			currentTop = currentTop + endGameContainerSize >= viewport.height ? viewport.height - endGameContainerSize : currentTop + 10;
+			$endGameContainer.css({'top' : currentTop + 'px'});
+		}
+
+		if (currentX > gamma) {
+			currentLeft = currentLeft >= endGameContainerSize - viewport.width ? currentLeft - 10 : currentLeft;
+			$endGameContainer.css({'left' : currentLeft + 'px'});
+		} else {
+			currentLeft = currentLeft + endGameContainerSize >= viewport.width ? viewport.width - endGameContainerSize : currentLeft + 10;
+			$endGameContainer.css({'left' : currentLeft + 'px'});
+		}
+	}
+
+	function endGame(imagePath) {
+		$endGameContainer.css({'top' : 0, 'left': 0});
+		$endGameImage.attr("src", imagePath);
+		$endGameContainer.fadeIn(fadeTime);
+		$playAgainButton.show();
+		isGameOver = true;
+		impossibleStrategy = "none";
+		setTimeout(function(){ 
+			if(window.DeviceOrientationEvent) {
+				window.addEventListener('deviceorientation', moveEndGameImage, false);
+			}
+		}, fadeTime);
+	}
+
 	function takeTurn() {
 		if (isGameOver) {
 			return this;
@@ -129,11 +175,7 @@
 
 		checkWin(true, isPlayerO);
 		if (isDraw() && !isGameOver) {
-			$endGameImage.attr("src", "images/draw.png");
-			$endGameContainer.fadeIn(1500);
-			$playAgainButton.show();
-			isGameOver = true;
-			impossibleStrategy = "none";
+			endGame("images/draw.png");
 			return this;
 		}
 
@@ -146,11 +188,7 @@
 		}
 
 		if (isDraw() && !isGameOver) {
-			$endGameImage.attr("src", "images/draw.png");
-			$endGameContainer.fadeIn(1500);
-			$playAgainButton.show();
-			isGameOver = true;
-			impossibleStrategy = "none";
+			endGame("images/draw.png");
 			return this;
 		}
 
@@ -241,16 +279,33 @@
 
 		var aiMovesCount = getAITiles().length;
 
-		switch (impossibleStrategy) {
-			case "Edge":
-				executeEdgeStategy(aiMovesCount);
-				break;
-			case "Corner":
-				executeCornerStategy(aiMovesCount);
-				break;
-			case "Middle":
-				executeMiddleStategy(aiMovesCount);
-				break;
+		// switch (impossibleStrategy) {
+		// 	case "Edge":
+				executeEdgeStrategy(aiMovesCount);
+		// 		break;
+		// 	case "Corner":
+		// 		executeCornerStategy(aiMovesCount);
+		// 		break;
+		// 	case "Middle":
+		// 		executeMiddleStategy(aiMovesCount);
+		// 		break;
+		// }
+	}
+
+	function placeOnRandomOfFour(one, two, three, four) {
+		switch (getRandomNumberFrom1To9() % 4) {
+			case 0:
+				aiMarkDiv($('#' + one));
+				return;
+			case 1:
+				aiMarkDiv($('#' + two));
+				return;
+			case 2:
+				aiMarkDiv($('#' + three));
+				return;
+			case 3:
+				aiMarkDiv($('#' + four));
+				return;
 		}
 	}
 
@@ -281,37 +336,13 @@
 							aiMarkDiv($('#' + 1));
 							return;
 						default:
-							switch (getRandomNumberFrom1To9() % 4) {
-								case 0:
-									aiMarkDiv($('#' + 1));
-									return;
-								case 1:
-									aiMarkDiv($('#' + 3));
-									return;
-								case 2:
-									aiMarkDiv($('#' + 7));
-									return;
-								case 3:
-									aiMarkDiv($('#' + 9));
-									return;
-							}
+							placeOnRandomOfFour(1, 3, 7, 9);
+							return;
 					}
 				} else {
 					if (containsAll(["1", "9"], playerNumbers) || containsAll(["3", "7"], playerNumbers)) {
-						switch (getRandomNumberFrom1To9() % 4) {
-							case 0:
-								aiMarkDiv($('#' + 2));
-								return;
-							case 1:
-								aiMarkDiv($('#' + 4));
-								return;
-							case 2:
-								aiMarkDiv($('#' + 6));
-								return;
-							case 3:
-								aiMarkDiv($('#' + 8));
-								return;
-						}
+						placeOnRandomOfFour(2, 4, 6, 8);
+						return;
 					} else {
 						takeTurnEasy();
 						return;
@@ -365,20 +396,8 @@
 		if (movesMadeSoFar === 0) {
 			var playerNumbers = getPlayerTiles();
 			if (playerNumbers.length === 0 || isHardDifficulty || $.inArray("5", playerNumbers) !== -1) {
-				switch (getRandomNumberFrom1To9() % 4) {
-					case 0:
-						aiMarkDiv($('#' + 1));
-						return;
-					case 1:
-						aiMarkDiv($('#' + 3));
-						return;
-					case 2:
-						aiMarkDiv($('#' + 7));
-						return;
-					case 3:
-						aiMarkDiv($('#' + 9));
-						return;
-				}
+				placeOnRandomOfFour(1, 3, 7, 9);
+				return;
 			} else {
 				if ($.inArray("2", playerNumbers) !== -1) {
 					markRandomOptionOutOfThree(1, 5, 3);
@@ -453,24 +472,14 @@
 		}
 	}
 
-	function executeEdgeStategy(movesMadeSoFar) {
+	function executeEdgeStrategy(movesMadeSoFar) {
 		if (movesMadeSoFar === 0) {
-			switch (getRandomNumberFrom1To9() % 4) {
-				case 0:
-					aiMarkDiv($('#' + 2));
-					return;
-				case 1:
-					aiMarkDiv($('#' + 4));
-					return;
-				case 2:
-					aiMarkDiv($('#' + 6));
-					return;
-				case 3:
-					aiMarkDiv($('#' + 8));
-					return;
-			}
+			placeOnRandomOfFour(2, 4, 6, 8);
+			return;
 		} else {
-			var aiTiles = getAITiles();
+			var aiTiles = getAITiles(),
+				playerTiles = getPlayerTiles();
+
 			if (movesMadeSoFar === 1) {
 				if ($.inArray("5", aiTiles) === -1 && !isDivTaken(5)) {
 					aiMarkDiv($('#' + 5));
@@ -497,21 +506,54 @@
 			}
 
 			if (movesMadeSoFar === 2) {
+				if ($.inArray("2", aiTiles) !== -1) {
+					if ($.inArray("4", aiTiles) !== -1 && !isDivTaken(1)) {
+						aiMarkDiv($('#' + 1));
+						return;
+					} else if (!isDivTaken(3) && isHardDifficulty) {
+						aiMarkDiv($('#' + 3));
+						return;
+					} else if (containsAll(["1", "8"], playerTiles) || containsAll(["3", "8"], playerTiles)) {
+						placeOnRandomOfFour(4, 6, 7, 9);
+						return;
+					}
+				}
+
 				if ($.inArray("4", aiTiles) !== -1) {
 					if ($.inArray("8", aiTiles) !== -1 && !isDivTaken(7)) {
 						aiMarkDiv($('#' + 7));
 						return;
-					} else if (!isDivTaken(1)) {
+					} else if (!isDivTaken(1) && isHardDifficulty) {
 						aiMarkDiv($('#' + 1));
+						return;
+					} else if (containsAll(["7", "6"], playerTiles) || containsAll(["1", "6"], playerTiles)) {
+						placeOnRandomOfFour(2, 3, 8, 9);
 						return;
 					}
 				}
+
 				if ($.inArray("6", aiTiles) !== -1) {
 					if ($.inArray("8", aiTiles) !== -1 && !isDivTaken(9)) {
 						aiMarkDiv($('#' + 9));
 						return;
-					} else if (!isDivTaken(3)) {
+					} else if (!isDivTaken(3) && isHardDifficulty) {
 						aiMarkDiv($('#' + 3));
+						return;
+					} else if (containsAll(["4", "3"], playerTiles) || containsAll(["4", "9"], playerTiles)) {
+						placeOnRandomOfFour(1, 2, 7, 8);
+						return;
+					}
+				}
+
+				if ($.inArray("8", aiTiles) !== -1) {
+					if ($.inArray("4", aiTiles) !== -1 && !isDivTaken(7)) {
+						aiMarkDiv($('#' + 7));
+						return;
+					} else if (!isDivTaken(9) && isHardDifficulty) {
+						aiMarkDiv($('#' + 9));
+						return;
+					} else if (containsAll(["2", "7"], playerTiles) || containsAll(["2", "9"], playerTiles)) {
+						placeOnRandomOfFour(1, 3, 4, 6);
 						return;
 					}
 				}
@@ -573,15 +615,10 @@
 
 		if (checkRows(numbers) || checkCols(numbers) || checkDiagonals(numbers)) {
 			if (hasPlayerPlayed) {
-				$endGameImage.attr("src", "images/win.png");
+				endGame("images/win.png");
 			} else {
-				$endGameImage.attr("src", "images/lose.png");
+				endGame("images/lose.png");
 			}
-
-			$endGameContainer.fadeIn(1500);
-			$playAgainButton.show();
-			isGameOver = true;
-			impossibleStrategy = "none";
 		}
 
 	}
@@ -665,8 +702,8 @@
 	}
 
 	function counterPlayerStrategyIfPossible() {
-		var playerNumbers = getPlayerTiles();
-		var aiNumbers = getAITiles();
+		var playerNumbers = getPlayerTiles(),
+			aiNumbers = getAITiles();
 		if (playerNumbers.length === 2) {
 			if (containsAll(["1", "5"], playerNumbers) || containsAll(["5", "9"], playerNumbers)) {
 				if (getRandomBool() && !isDivTaken(7)) {
