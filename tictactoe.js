@@ -35,7 +35,7 @@
 		fadeTime = 1500,
 		endGameAudio;
 
-	$endGameContainer.hide();
+	// $endGameContainer.hide();
 	$resetGame.hide();
 	$difficultyDropdown.hide();
 	$userForm.hide();
@@ -121,40 +121,41 @@
 			currentTop = parseFloat($endGameContainer.css('top')) || 0,
 			currentLeft = parseFloat($endGameContainer.css('left')) || 0,
 			beta = window.orientation === 0 ? event.beta : event.gamma,
-			gamma = window.orientation === 0 ? event.gamma : event.beta;
+			gamma = window.orientation === 0 ? event.gamma : event.beta,
+			conditionTop = window.orientation !== 90 ? currentY > beta : currentY < beta,
+			conditionLeft = window.orientation !== -90 && window.orientation !== 270 ? currentX > gamma : currentX < gamma;
 
-		if (currentY > beta) {
+		if (conditionTop) {
 			currentTop = currentTop >= endGameContainerSize - viewport.height ? currentTop - 10 : currentTop;
-			$endGameContainer.css({'top' : currentTop + 'px'});
 		} else {
 			currentTop = currentTop + endGameContainerSize >= viewport.height ? viewport.height - endGameContainerSize : currentTop + 10;
-			$endGameContainer.css({'top' : currentTop + 'px'});
 		}
 
-		if (currentX > gamma) {
+		if (conditionLeft) {
 			currentLeft = currentLeft >= endGameContainerSize - viewport.width ? currentLeft - 10 : currentLeft;
-			$endGameContainer.css({'left' : currentLeft + 'px'});
 		} else {
 			currentLeft = currentLeft + endGameContainerSize >= viewport.width ? viewport.width - endGameContainerSize : currentLeft + 10;
-			$endGameContainer.css({'left' : currentLeft + 'px'});
 		}
+
+		$endGameContainer.css({'top' : currentTop + 'px'});
+		$endGameContainer.css({'left' : currentLeft + 'px'});
 	}
 
-	function endGame(imagePath) {
-		isGameOver = true;
-		endGameAudio = new Audio('sound/endgame.mp3');
-		endGameAudio.play();
-		$endGameContainer.css({'top' : 0, 'left': 0});
-		$endGameImage.attr("src", imagePath);
-		$endGameContainer.fadeIn(fadeTime);
-		$playAgainButton.show();
-		impossibleStrategy = "none";
-		setTimeout(function(){ 
+	// function endGame(imagePath) {
+	// 	isGameOver = true;
+	// 	endGameAudio = new Audio('sound/endgame.mp3');
+	// 	endGameAudio.play();
+	// 	$endGameContainer.css({'top' : 0, 'left': 0});
+	// 	$endGameImage.attr("src", imagePath);
+	// 	$endGameContainer.fadeIn(fadeTime);
+	// 	$playAgainButton.show();
+	// 	impossibleStrategy = "none";
+	// 	setTimeout(function(){ 
 			if(window.DeviceOrientationEvent) {
 				window.addEventListener('deviceorientation', moveEndGameImage, false);
 			}
-		}, fadeTime);
-	}
+	// 	}, fadeTime);
+	// }
 
 	function takeTurn() {
 		if (isGameOver) {
