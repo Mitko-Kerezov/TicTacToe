@@ -32,7 +32,8 @@
 		currentY = 0,
 		endGameContainerSize = parseFloat($endGameContainer.css('width')),
 		orientation,
-		fadeTime = 1500;
+		fadeTime = 1500,
+		endGameAudio;
 
 	$endGameContainer.hide();
 	$resetGame.hide();
@@ -54,6 +55,7 @@
 	});
 
 	function playAgain() {
+		endGameAudio.pause();
 		$playAgainButton.hide();
 		$endGameContainer.hide();
 		$('.played-by-o').removeClass('played-by-o').text('');
@@ -139,6 +141,8 @@
 	}
 
 	function endGame(imagePath) {
+		endGameAudio = new Audio('sound/endgame.mp3');
+		endGameAudio.play();
 		$endGameContainer.css({'top' : 0, 'left': 0});
 		$endGameImage.attr("src", imagePath);
 		$endGameContainer.fadeIn(fadeTime);
@@ -279,17 +283,17 @@
 
 		var aiMovesCount = getAITiles().length;
 
-		// switch (impossibleStrategy) {
-		// 	case "Edge":
+		switch (impossibleStrategy) {
+			case "Edge":
 				executeEdgeStrategy(aiMovesCount);
-		// 		break;
-		// 	case "Corner":
-		// 		executeCornerStategy(aiMovesCount);
-		// 		break;
-		// 	case "Middle":
-		// 		executeMiddleStategy(aiMovesCount);
-		// 		break;
-		// }
+				break;
+			case "Corner":
+				executeCornerStategy(aiMovesCount);
+				break;
+			case "Middle":
+				executeMiddleStategy(aiMovesCount);
+				break;
+		}
 	}
 
 	function placeOnRandomOfFour(one, two, three, four) {
