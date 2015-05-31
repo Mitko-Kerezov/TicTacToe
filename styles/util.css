@@ -33,7 +33,6 @@ body{
 	min-height: 80px;
 	max-height: 100px;
 	padding: 0;
-	/*height: 100px;*/
 }
 
 .game-tile .:hover{

@@ -141,13 +141,13 @@
 	}
 
 	function endGame(imagePath) {
+		isGameOver = true;
 		endGameAudio = new Audio('sound/endgame.mp3');
 		endGameAudio.play();
 		$endGameContainer.css({'top' : 0, 'left': 0});
 		$endGameImage.attr("src", imagePath);
 		$endGameContainer.fadeIn(fadeTime);
 		$playAgainButton.show();
-		isGameOver = true;
 		impossibleStrategy = "none";
 		setTimeout(function(){ 
 			if(window.DeviceOrientationEvent) {
@@ -618,10 +618,18 @@
 		};
 
 		if (checkRows(numbers) || checkCols(numbers) || checkDiagonals(numbers)) {
-			if (hasPlayerPlayed) {
-				endGame("images/win.png");
+			if (isTwoPlayerGame) {
+				if (checkO) {
+					endGame("images/winO.png");
+				} else {
+					endGame("images/winX.png");
+				}
 			} else {
-				endGame("images/lose.png");
+				if (hasPlayerPlayed) {
+					endGame("images/win.png");
+				} else {
+					endGame("images/lose.png");
+				}
 			}
 		}
 
