@@ -2,14 +2,34 @@
 <html>
 	<head>
 		<meta name="HandheldFriendly" content="True">
-        <meta name="MobileOptimized" content="320">
+		<meta name="MobileOptimized" content="320">
 		<meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui, maximum-scale=1">
 		<title>Tic Tac Toe</title>
 		<script type="text/javascript" src="libs/jquery.js"></script>
 		<script type="text/javascript" src="bootstrap.js"></script>
 		<link rel="stylesheet" type="text/css" href="styles/bootstrap-3.2.0-dist/bootstrap-theme.css" />
-    	<link rel="stylesheet" type="text/css" href="styles/bootstrap-3.2.0-dist/bootstrap.css" />
-    	<link rel="stylesheet" type="text/css" href="styles/util.css" />
+		<link rel="stylesheet" type="text/css" href="styles/bootstrap-3.2.0-dist/bootstrap.css" />
+		<link rel="stylesheet" type="text/css" href="styles/util.css" />
+		
+		<link rel="apple-touch-icon" sizes="57x57" href="/images/favicons/apple-touch-icon-57x57.png">
+		<link rel="apple-touch-icon" sizes="60x60" href="/images/favicons/apple-touch-icon-60x60.png">
+		<link rel="apple-touch-icon" sizes="72x72" href="/images/favicons/apple-touch-icon-72x72.png">
+		<link rel="apple-touch-icon" sizes="76x76" href="/images/favicons/apple-touch-icon-76x76.png">
+		<link rel="apple-touch-icon" sizes="114x114" href="/images/favicons/apple-touch-icon-114x114.png">
+		<link rel="apple-touch-icon" sizes="120x120" href="/images/favicons/apple-touch-icon-120x120.png">
+		<link rel="apple-touch-icon" sizes="144x144" href="/images/favicons/apple-touch-icon-144x144.png">
+		<link rel="apple-touch-icon" sizes="152x152" href="/images/favicons/apple-touch-icon-152x152.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon-180x180.png">
+		<link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+		<link rel="icon" type="image/png" href="/images/favicons/android-chrome-192x192.png" sizes="192x192">
+		<link rel="icon" type="image/png" href="/images/favicons/favicon-96x96.png" sizes="96x96">
+		<link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+		<link rel="manifest" href="/images/favicons/manifest.json">
+		<link rel="shortcut icon" href="/images/favicons/favicon.ico">
+		<meta name="msapplication-TileColor" content="#da532c">
+		<meta name="msapplication-TileImage" content="/images/favicons/mstile-144x144.png">
+		<meta name="msapplication-config" content="/images/favicons/browserconfig.xml">
+		<meta name="theme-color" content="#ffffff">
 	</head>
 	<body class="centered">
 	<section id="navigation" class="centered">
@@ -28,16 +48,16 @@
 		</div>
 		<div class="btn-group closed"  id="difficulty">
 			<a data-toggle="dropdown" class="btn btn-default dropdown-toggle" href="#">
-	          Difficulty
-	          <span class="caret"></span>
-	        </a>
-	        <ul class="dropdown-menu">
+			  Difficulty
+			  <span class="caret"></span>
+			</a>
+			<ul class="dropdown-menu">
 				<li class="difficulty-options">Easy</li>
 				<li class="difficulty-options">Normal</li>
 				<li class="difficulty-options">Hard</li>
 				<li class="difficulty-options">Impossible</li>
-	        </ul>
-        </div>
+			</ul>
+		</div>
 	</section>
 	<section id="gameField" class="centered">
 		<span id="playerOneName"></span> vs

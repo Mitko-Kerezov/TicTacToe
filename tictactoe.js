@@ -35,7 +35,7 @@
 		fadeTime = 1500,
 		endGameAudio;
 
-	// $endGameContainer.hide();
+	$endGameContainer.hide();
 	$resetGame.hide();
 	$difficultyDropdown.hide();
 	$userForm.hide();
@@ -141,21 +141,21 @@
 		$endGameContainer.css({'left' : currentLeft + 'px'});
 	}
 
-	// function endGame(imagePath) {
-	// 	isGameOver = true;
-	// 	endGameAudio = new Audio('sound/endgame.mp3');
-	// 	endGameAudio.play();
-	// 	$endGameContainer.css({'top' : 0, 'left': 0});
-	// 	$endGameImage.attr("src", imagePath);
-	// 	$endGameContainer.fadeIn(fadeTime);
-	// 	$playAgainButton.show();
-	// 	impossibleStrategy = "none";
-	// 	setTimeout(function(){ 
+	function endGame(imagePath) {
+		isGameOver = true;
+		endGameAudio = new Audio('sound/endgame.mp3');
+		endGameAudio.play();
+		$endGameContainer.css({'top' : 0, 'left': 0});
+		$endGameImage.attr("src", imagePath);
+		$endGameContainer.fadeIn(fadeTime);
+		$playAgainButton.show();
+		impossibleStrategy = "none";
+		setTimeout(function(){ 
 			if(window.DeviceOrientationEvent) {
 				window.addEventListener('deviceorientation', moveEndGameImage, false);
 			}
-	// 	}, fadeTime);
-	// }
+		}, fadeTime);
+	}
 
 	function takeTurn() {
 		if (isGameOver) {
