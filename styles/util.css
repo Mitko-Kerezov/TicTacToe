@@ -1,0 +1,69 @@
+.centered {
+    text-align: center;
+    margin: 0 auto
+}
+.gameover {
+    margin-top: 5%
+}
+body {
+    background-color: #ccc;
+    padding-top: 2%
+}
+.difficulty-options {
+    cursor: pointer;
+    padding-left: 3%;
+    font-size: 1.5em;
+}
+.difficulty-options:hover {
+    color: #fff
+}
+#gameField {
+    width: 100%;
+    min-height: 300px
+}
+.game-tile {
+    margin: .3%;
+    min-width: 80px;
+    max-width: 100px;
+    min-height: 80px;
+    max-height: 100px;
+    padding: 0
+}
+.played-by-o,
+.played-by-x {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 4em;
+    font-weight: 700;
+    text-align: center
+}
+.game-tile .played-by-x:hover,
+.played-by-x {
+    color: #7533AF!important
+}
+.game-tile .played-by-o:hover,
+.played-by-o {
+    color: #57E22D!important
+}
+#resetGame {
+    margin-top: 2%
+}
+#end-game {
+    margin: auto;
+    position: absolute;
+    max-height: 250px;
+    max-width: 250px;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0
+}
+.form-control-mobile {
+    min-width: 200px;
+    width: 20%;
+    margin-bottom: 2%
+}
+@media screen and (orientation: landscape) {
+    #end-game {
+        top: 30%
+    }
+}
